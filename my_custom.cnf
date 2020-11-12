@@ -1,0 +1,4 @@
+[mysqld]
+innodb_data_file_path=ibdata1:128M:autoextend
+innodb_file_per_table=OFF
+slow_query_log=ON

@@ -1,0 +1,54 @@
+version: '2'
+services:
+  php:
+    image: 'docker.io/smithsoftau/php-fpm'
+    container_name: php
+    volumes:
+      - './docker/code:/code'
+      - './docker/php.ini:/usr/local/etc/php/php.ini:ro'
+    depends_on:
+      - mariadb
+
+  web:
+    image: nginx:latest
+    container_name: web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./docker/code:/code
+      - ./site.conf:/etc/nginx/conf.d/site.conf:ro
+    command: [nginx-debug, '-g', 'daemon off;']
+    links:
+      - php
+
+  mariadb:
+    image: 'docker.io/bitnami/mariadb:10.3-debian-10'
+    container_name: mysql
+    volumes:
+      - './db:/host'
+      - ./my_custom.cnf:/opt/bitnami/mariadb/conf/my_custom.cnf:ro
+      - ./mariadb-persistence:/bitnami/mariadb
+      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_DATABASE=mydate
+      - MARIADB_USER=mydate
+      - MARIADB_PASSWORD=mydate
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: dev_pma
+    links:
+      - mariadb
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    depends_on: 
+      - mariadb
+    ports:
+      - 8081:80
+
+
+

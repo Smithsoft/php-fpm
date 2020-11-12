@@ -1,0 +1,16 @@
+application/logs/*
+docker/collisor/*
+docker/session/*
+docker/application/*
+mariadb-persistence/data/*
+.vscode
+
+# Don't check the .env file into source control
+.env
+
+# Ignore this file - it is controlled by cpanel or the site admin
+.htaccess
+
+assets/uploads/coursecsv/*
+
+.DS_Store
